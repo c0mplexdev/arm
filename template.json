@@ -68,14 +68,8 @@
         "adminUsername": {
             "type": "string"
         },
-        "securityType": {
-            "type": "string"
-        },
-        "secureBoot": {
-            "type": "bool"
-        },
-        "vTPM": {
-            "type": "bool"
+        "adminPublicKey": {
+            "type": "secureString"
         }
     },
     "variables": {
@@ -225,14 +219,15 @@
                     "computerName": "[parameters('virtualMachineComputerName')]",
                     "adminUsername": "[parameters('adminUsername')]",
                     "linuxConfiguration": {
-                        "disablePasswordAuthentication": true
-                    }
-                },
-                "securityProfile": {
-                    "securityType": "[parameters('securityType')]",
-                    "uefiSettings": {
-                        "secureBootEnabled": "[parameters('secureBoot')]",
-                        "vTpmEnabled": "[parameters('vTPM')]"
+                        "disablePasswordAuthentication": true,
+                        "ssh": {
+                            "publicKeys": [
+                                {
+                                    "path": "[concat('/home/', parameters('adminUsername'), '/.ssh/authorized_keys')]",
+                                    "keyData": "[parameters('adminPublicKey')]"
+                                }
+                            ]
+                        }
                     }
                 },
                 "diagnosticsProfile": {
